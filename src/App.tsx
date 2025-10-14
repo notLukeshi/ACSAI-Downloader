@@ -61,6 +61,13 @@ function App() {
           tabs[0].id,
           { action: "findAttachments" },
           (response) => {
+            const error = chrome.runtime.lastError;
+            if (error) {
+              setLoading(false);
+              toast.warning("This page is not supported by ACSAI Downloader.");
+              return;
+            }
+
             setLoading(false);
             if (response?.attachments && response.attachments.length > 0) {
               setAttachments(response.attachments);
@@ -74,7 +81,7 @@ function App() {
         );
       }
     });
-  }, [toast]);
+  }, []);
 
   const handleToggleSelect = (id: string) => {
     const newSelected = new Set(selected);
