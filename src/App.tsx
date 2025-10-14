@@ -98,10 +98,18 @@ function App() {
   };
 
   const handleMouseDown = (id: string) => {
-    setIsDragging(true);
     const mode = selected.has(id) ? "deselect" : "select";
+    setIsDragging(true);
     setDragSelectMode(mode);
-    handleDragOver(id); // Select the first item immediately
+    setSelected((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (mode === "select") {
+        newSelected.add(id);
+      } else {
+        newSelected.delete(id);
+      }
+      return newSelected;
+    });
   };
 
   const handleMouseUp = () => {
