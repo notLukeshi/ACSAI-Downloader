@@ -20,8 +20,21 @@ interface Attachment {
   url: string;
 }
 
+const getInitialTheme = () => {
+  if (typeof window === "undefined") {
+    return "light";
+  }
+  const storedTheme = window.localStorage.getItem("theme");
+  if (storedTheme === "dark" || storedTheme === "light") {
+    return storedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
 function App() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(getInitialTheme);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -38,7 +51,10 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    toast("🔍 Searching for attachments...");
+    window.localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.id) {
         chrome.tabs.sendMessage(
@@ -49,10 +65,10 @@ function App() {
             if (response?.attachments && response.attachments.length > 0) {
               setAttachments(response.attachments);
               toast.success(
-                `✅ Found ${response.attachments.length} attachments!`
+                `Found ${response.attachments.length} attachments!`
               );
             } else {
-              toast.info("🤷‍♂️ No attachments found on this page.");
+              toast.warning("No attachments found on this page.");
             }
           }
         );
@@ -82,11 +98,11 @@ function App() {
   const handleDownload = () => {
     const selectedFiles = attachments.filter((a) => selected.has(a.id));
     if (selectedFiles.length === 0) {
-      toast.warning("⚠️ Please select at least one file to download.");
+      toast.warning("Please select at least one file to download.");
       return;
     }
 
-    toast.success(`🚀 Download started for ${selectedFiles.length} files...`);
+    toast.success(`Download started for ${selectedFiles.length} files...`);
     const filesToDownload = selectedFiles.map(({ url, name: filename }) => ({
       url,
       filename,
@@ -172,7 +188,6 @@ function App() {
                         ? "bg-muted"
                         : "hover:bg-muted/50"
                     }`}
-                    onClick={() => handleToggleSelect(attachment.id)}
                     onMouseDown={() => handleMouseDown(attachment.id)}
                     onMouseEnter={() => handleDragOver(attachment.id)}
                   >
