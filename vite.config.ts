@@ -1,21 +1,24 @@
-import path from "path"
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+
+const root = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': resolve(root, './src'),
     },
   },
   build: {
     rollupOptions: {
       input: {
-        index: path.resolve(__dirname, 'index.html'),
-        background: path.resolve(__dirname, 'src/background.ts'),
-        content: path.resolve(__dirname, 'src/content.ts'),
+        index: resolve(root, 'index.html'),
+        background: resolve(root, 'src/background.ts'),
+        content: resolve(root, 'src/content.ts'),
       },
       output: {
         entryFileNames: `assets/[name].js`,

@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "ACSAI Downloader",
     "version": "1.0",
-    "description": "A sleek, modern extension for downloading page attachments.",
+    "description": "Downloads attachments from ACSAI's circus.francescodb.me",
     "permissions": [
       "activeTab",
       "scripting",
