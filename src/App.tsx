@@ -163,7 +163,7 @@ function App() {
         <CardHeader className="px-4 pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="flex items-center gap-3 text-lg">
-              <img src="/favicon.svg" alt="Logo" className="h-8 w-8" />
+              <img src="/web-app-manifest-192x192.png" alt="Logo" className="h-8 w-8" />
               ACSAI Downloader
             </CardTitle>
             <Button
